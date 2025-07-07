@@ -12,6 +12,7 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));  
 app.use(express.static("public"));
+app.use(express.json());
 
 app.get('/', function(req, res){
 
@@ -34,6 +35,26 @@ app.post('/', function(req, res) {
     } 
 
 })
+
+app.post('/edit', function(req, res) {
+    const { index, newText, listTitle } = req.body;
+    if (listTitle === "Work List") {
+        workItems[index] = newText;
+    } else {
+        items[index] = newText;
+    }
+    res.sendStatus(200);
+});
+
+app.post('/delete', function(req, res) {
+    const { index, listTitle } = req.body;
+    if (listTitle === "Work List") {
+        workItems.splice(index, 1);
+    } else {
+        items.splice(index, 1);
+    }
+    res.sendStatus(200);
+});
 
 app.get('/work', function(req, res) {
     res.render("lists", {listTitle: "Work List", newListItems: workItems})
